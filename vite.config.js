@@ -7,5 +7,5 @@ export default defineConfig({
   build: {
     outDir: 'dist', // This is the default setting and can be omitted unless you need a different directory
   },
-  base: "/Fourier-Series-and-Fourier-Transform/"
+  base: "/Fourier-Series/"
 })

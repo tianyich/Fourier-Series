@@ -2,7 +2,7 @@
   "name": "yyy",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://tianyich.github.io/Fourier-Series-and-Fourier-Transform/",
+  "homepage": "https://tianyich.github.io/Fourier-Series/",
   "type": "module",
   "scripts": {
     "predeploy": "npm run build",
