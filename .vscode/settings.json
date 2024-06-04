@@ -1,0 +1,4 @@
+{
+    "javascript.validate.enable": false,
+    "svelte.ask-to-enable-ts-plugin": false
+}

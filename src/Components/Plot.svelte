@@ -3,71 +3,35 @@
     import { onMount } from "svelte";
     import katexify from "../katexify";
     import Scrolly from "./Scrolly.svelte";
+    import {
+        calculateCoefficients,
+        generateFourierSeries,
+        functions,
+    } from "./functions.js"
     let svg;
-    let sliderValue = 0;
+    let sliderValue = 1;
     let selectedFunction = "f1";
     let scroll_value = 0;
-
-    const f1 = (x) => Math.pow(x, 2);
-    const f2 = (x) => Math.pow(Math.E, x);
-    const f3 = (x) => Math.sign(Math.sin(x));
-    const f4 = (x) =>
-        Math.abs(x) <= 1 ? Math.sqrt(Math.pow(1, 2) - Math.pow(x, 2)) : 0;
-    const functions = {
-        f1: { func: f1, latex: "f(x) = x^2" },
-        f2: { func: f2, latex: "f(x) = e^x" },
-        f3: { func: f3, latex: "f(x) = sign(sin(x))" },
-        f4: { func: f4, latex: "f(x) = \\sqrt{1^2 - x^2}" },
-    };
-    const integrate = (f, a, b, n = 1000) => {
-        const h = (b - a) / n;
-        let sum = 0.5 * (f(a) + f(b));
-        for (let i = 1; i < n; i++) {
-            sum += f(a + i * h);
-        }
-        return sum * h;
-    };
-
-    const calculateCoefficients = (n, f) => {
-        const a = [];
-        const b = [];
-        for (let i = 0; i <= n; i++) {
-            a[i] =
-                (1 / Math.PI) *
-                integrate((x) => f(x) * Math.cos(i * x), -Math.PI, Math.PI);
-            b[i] =
-                (1 / Math.PI) *
-                integrate((x) => f(x) * Math.sin(i * x), -Math.PI, Math.PI);
-        }
-        return { a, b };
-    };
-
-    // Define the function to generate the Fourier series
-    const generateFourierSeries = (a, b, x) => {
-        let sum = a[0] / 2;
-        for (let i = 1; i < a.length; i++) {
-            sum += a[i] * Math.cos(i * x) + b[i] * Math.sin(i * x);
-        }
-        return sum;
-    };
+     
+    
 
     const generatePlot = () => {
         const f = (x) => functions[selectedFunction].func(x);
         const svg1 = d3.select(svg);
         svg1.selectAll("path").remove();
         svg1.selectAll("g").remove();
-        const width = 500,
-            height = 500,
+        const width = 700,
+            height = 700,
             padding = 5;
 
         const xScale = d3
             .scaleLinear()
             .domain([-3, 3.2])
-            .range([padding, width-padding]);
+            .range([padding, width - padding]);
         const yScale = d3
             .scaleLinear()
             .domain([-3, 3])
-            .range([height-padding, padding]);
+            .range([height - padding, padding]);
 
         // Define the line generator
         const line = d3
@@ -128,61 +92,108 @@
         generatePlot();
     };
     onMount(generatePlot);
-    $: steps = [
-        `<h1 class='step-title'>Step 1</h1>
-       <br><br>
-      <p>
-       
-      </p>`,
-        `<h1 class='step-title'>Step 2</h1>
-      <p>
-        
-        </p>
-    <br><br>`,
-    ];
 </script>
 
 <main>
     <section>
         <!-- scroll container -->
         <div class="section-container">
-            <div class="plot-container" id=plot>
+            <div class="plot-container" id="plot">
                 <div class="plot">
-                    <input
-                        type="range"
-                        min="0"
-                        max="30"
-                        bind:value={sliderValue}
-                        on:input={generatePlot}
-                    />
-                    <div class='buttons'>
-                    <ul>
-                        {#each Object.keys(functions) as key}
+                    <div class="buttons">
+                        <ul>
+                            {#each Object.keys(functions) as key}
+                                <li>
+                                    <button
+                                        class="function-button"
+                                        on:click={() => selectFunction(key)}
+                                    >
+                                        {@html katexify(
+                                            functions[key].latex,
+                                            true,
+                                        )}
+                                    </button>
+                                </li>
+                            {/each}
                             <li>
-                                <button
-                                    class="function-button"
-                                    on:click={() => selectFunction(key)}
-                                >
-                                    {@html katexify(functions[key].latex, true)}
-                                </button>
+                                <div class='slider-container'>
+                                <input
+                                type="range"
+                                min="1"
+                                max="30"
+                                bind:value={sliderValue}
+                                on:input={generatePlot}
+                            />
+                            <label for="points">Number of terms: {sliderValue}</label>
+                                </div>
                             </li>
-                        {/each}
-                    </ul>
+                        </ul>
+                    </div>
+                       
+                    
+                    <svg bind:this={svg} width="700" height="700"></svg>
                 </div>
-                    <svg bind:this={svg} width='500' height='500'></svg>
-                </div>
-                
             </div>
 
             <div class="steps-container">
-                <Scrolly bind:scroll_value>
-                    {#each steps as text, i}
-                        <div class="step" class:active={scroll_value === i}>
-                            <div class="step-content">{@html text}</div>
+                <Scrolly bind:value={scroll_value} increments={50}>
+                    <div class="step active">
+                        <div class="step-content">
+                            Pick a function {@html katexify("f(x)")} and an interval
+                            {@html katexify("[a,b]")} to calculate the Fourier series.
+                            For example, you can choose
+                            {@html katexify("f(x) = x^2")} and the interval
+                            {@html katexify("[-\\pi, \\pi]")}.
                         </div>
-                    {/each}
-                    <div class="spacer" />
-                </Scrolly>
+                    </div>
+                    <div class="step active">
+                        <div class="step-content">
+                            Calculate the Fourier coefficient {@html katexify(
+                                "\\hat{f}(n)",
+                            )} using the formula:
+                            {@html katexify(
+                                "\\hat{f}(n) = \\frac{1}{T} \\int_{-\\pi}^{\\pi} f(x) e^{-2\\pi inx/ T} dx",
+                                true,
+                            )}
+                            where {@html katexify("T = b - a")} is the length of
+                            the interval. We choose the interval {@html katexify(
+                                "[-\\pi, \\pi]",
+                            )} for easier calculations, thus the formula becomes:
+                            {@html katexify(
+                                "\\hat{f}(n) = \\frac{1}{2\\pi} \\int_{-\\pi}^{\\pi} f(x) e^{-inx} dx",
+                                true,
+                            )}
+                        </div>
+                    </div>
+                    <div class="step active">
+                        <div class="step-content">
+                            Calculate the Fourier series using the formula:
+                            {@html katexify(
+                                "f(x) \\sim \\sum_{n=-\\infty}^{\\infty} \\hat{f}(n) e^{inx}",
+                                true,
+                            )}
+                        </div>
+                    </div>
+                    <div class="step active">
+                        <div class="step-content">
+                            If we expand the formula using Euler's formula {@html katexify(
+                                "e^{inx} = \\cos(nx) + i \\sin(nx)",
+                            )}, we get:
+                            {@html katexify(
+                                "f(x) \\sim \\sum_{n=-\\infty}^{\\infty} (a_n \\cos(nx) + b_n \\sin(nx))",
+                                true,
+                            )}
+                            where {@html katexify(
+                                "a_n=\\frac{1}{2\\pi} \\int_{-\\pi}^{\\pi} f(x) \\cos(nx) dx",
+                                true,
+                            )}{@html katexify(
+                                "b_n=\\frac{1}{2\\pi} \\int_{-\\pi}^{\\pi} f(x) \\sin(nx) dx",
+                                true,
+                            )}
+                        </div>
+                        <div class="spacer"></div>
+                    </div></Scrolly
+                >
             </div>
         </div>
     </section>
@@ -190,27 +201,29 @@
 
 <style>
     .function-button {
-        top:10px;
+        position: relative;
+        top: 10px;
         left: 10px;
-        background-color: #4caf50; 
+        background-color: #4caf50;
         border: none;
         color: white;
         padding: 15px 32px;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
         font-size: 16px;
         margin: 4px 2px;
         cursor: pointer;
         border-radius: 12px;
         transition-duration: 0.4s;
-        width: 200px; 
-        height: 50px; 
-        overflow: hidden; 
-        top : 10px;
+        width: 200px;
+        height: 50px;
+        overflow: hidden;
+        top: 10px;
         left: 10px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
     }
-
 
     .function-button:hover {
         background-color: white;
@@ -218,7 +231,6 @@
         border: 2px solid #4caf50;
     }
 
-    
     .buttons {
         display: flex;
         flex-direction: row;
@@ -230,11 +242,15 @@
     ul {
         list-style-type: none;
         padding: 0;
-        margin: 0;
+        margin: 10;
+    }
+
+    .slider-container {
+        margin-top: 20px;
     }
 
     .spacer {
-        height: 40vh;
+        height: 85vh;
     }
 
     .plot-container {
@@ -276,6 +292,7 @@
         font-family: var(--font-main);
         line-height: 1.3;
         border: 5px solid var(--default);
+        display: inline !important;
     }
 
     .step.active .step-content {

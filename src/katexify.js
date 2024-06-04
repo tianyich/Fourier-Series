@@ -4,6 +4,7 @@ export default function katexify(math, displayMode = false) {
   const options = {
     displayMode: displayMode,
     throwOnError: false,
+    output: "html",
   };
   return katex.renderToString(math, options);
 }

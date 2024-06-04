@@ -2,12 +2,16 @@
     import Title from "./Components/Title.svelte";
     import Plot from "./Components/Plot.svelte";
     import Scrolly from "./Components/Scrolly.svelte";
+    import Derivation from "./Components/Derivation.svelte";
+    import Application from "./Components/Application.svelte";
 </script>
 
 <main>
     <Title />
     <Plot />
     <Scrolly />
+    <Derivation />
+    <Application />
 </main>
 
 <style>
@@ -27,5 +31,8 @@
     }
     main::-webkit-scrollbar {
         display: none;
+    }
+    main > * {
+        margin-bottom: 4em; 
     }
 </style>

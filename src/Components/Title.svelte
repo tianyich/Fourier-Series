@@ -16,6 +16,11 @@
         {@html katexify(def,true)}
         Where {@html katexify('\\hat{f}(n)')} is the {@html katexify('n^{th}')} Fourier coefficient of the function {@html katexify('f(x)')}.
     </p>
+    <p>
+        
+    <p>
+        If we further expand {@html katexify('e^{inx}')} the formula using Euler's formula, we get:
+    </p>
    
 </section>
 <style>
