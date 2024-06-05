@@ -2,28 +2,97 @@
     import * as d3 from "d3";
     import { onMount } from "svelte";
     import katexify from "../katexify";
-    let matrix = Array(16)
-        .fill()
-        .map(() =>
-            Array(16)
-                .fill()
-                .map(() => Math.random() * 255),
-        );
+    let matrix = [
+            [
+                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+                255, 255, 255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 255,
+                255, 255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 91, 91, 91, 0,
+                255, 255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 0, 91, 91,
+                0, 255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 255, 255, 255, 0, 180, 255, 255,
+                255, 180, 0, 255, 255,
+            ],
+            [
+                255, 255, 0, 0, 255, 255, 255, 255, 255, 0, 255, 255, 0, 255,
+                255, 0, 255, 255,
+            ],
+            [
+                255, 0, 180, 180, 0, 0, 255, 255, 255, 0, 255, 255, 0, 255, 192,
+                192, 0, 255,
+            ],
+            [
+                255, 0, 180, 255, 255, 0, 0, 0, 0, 180, 255, 255, 255, 255, 255,
+                0, 255, 255,
+            ],
+            [
+                255, 0, 180, 255, 255, 255, 255, 180, 180, 255, 255, 255, 255,
+                255, 255, 0, 255, 255,
+            ],
+            [
+                255, 0, 0, 180, 180, 255, 255, 255, 180, 255, 255, 255, 255,
+                255, 255, 180, 0, 255,
+            ],
+            [
+                255, 0, 180, 180, 180, 0, 0, 180, 180, 255, 255, 255, 255, 255,
+                255, 255, 0, 255,
+            ],
+            [
+                255, 0, 180, 180, 180, 0, 255, 255, 255, 255, 0, 255, 255, 255,
+                255, 255, 0, 255,
+            ],
+            [
+                255, 255, 0, 180, 180, 180, 0, 0, 0, 0, 255, 0, 255, 255, 255,
+                180, 0, 255,
+            ],
+            [
+                255, 255, 255, 0, 180, 180, 180, 180, 180, 255, 255, 255, 255,
+                180, 180, 0, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 0, 0, 180, 0, 180, 180, 180, 180, 180, 0, 0,
+                255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 0, 106, 0, 0, 0, 0, 0, 255, 255,
+                255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 0, 106, 192, 192, 0, 192, 0, 255,
+                255, 255, 255, 255,
+            ],
+            [
+                255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+                255, 255, 255, 255, 255,
+            ],
+        ];
     let new_matrix = JSON.parse(JSON.stringify(matrix));
+    console.log(new_matrix);
     let kernel = [
-        [1, 1, 1],
-        [1, 0, -1],
-        [-1, -1, -1],
+        [0.05, 0.1, 0.05],
+        [0.1, 0.4, 0.1],
+        [0.05, 0.1, 0.05],
     ];
     let svg;
     let svg1;
     let step = 0;
-    let size = 16;
+    let size = 18;
+    let animate;
 
     const generateGraph = () => {
         const cellSize = 40; // Size of each cell in pixels
-        d3.select(svg).selectAll(".kernel").remove();
-        d3.select(svg1).selectAll(".kernel").remove();
+        d3.select(svg).selectAll("*").remove();
+        d3.select(svg1).selectAll("*").remove();
 
         const cells = d3
             .select(svg)
@@ -49,7 +118,7 @@
                 if (x === 0 || y === 0 || x === size - 1 || y === size - 1) {
                     return "none"; // Make the cell invisible if it's on the edge
                 } else {
-                    return d3.interpolateGreys(d / 255);
+                    return d3.interpolateGreys(1 - d / 255);
                 }
             });
 
@@ -64,7 +133,7 @@
                 const x = i % size;
                 const y = Math.floor(i / size);
                 if (x === 0 || y === 0 || x === size - 1 || y === size - 1) {
-                    return "none"; 
+                    return "none";
                 } else {
                     return "#4287f5";
                 }
@@ -76,7 +145,7 @@
             .append("rect")
             .attr("width", cellSize * 3)
             .attr("height", cellSize * 3)
-            .attr("stroke", "Blue")
+            .attr("stroke", "Red")
             .attr("stroke-width", 2)
             .attr("fill", "none")
             .attr("class", "kernel")
@@ -115,9 +184,9 @@
                 const x = i % size;
                 const y = Math.floor(i / size);
                 if (x === 0 || y === 0 || x === size - 1 || y === size - 1) {
-                    return "none"; 
+                    return "none";
                 } else {
-                    return d3.interpolateGreys(d / 255);
+                    return d3.interpolateGreys(1 - d / 255);
                 }
             });
 
@@ -132,7 +201,7 @@
                 const x = i % size;
                 const y = Math.floor(i / size);
                 if (x === 0 || y === 0 || x === size - 1 || y === size - 1) {
-                    return "none"; 
+                    return "none";
                 } else {
                     return "#4287f5";
                 }
@@ -148,7 +217,6 @@
             .attr("fill", "none")
             .attr("class", "kernel")
             .attr("transform", `translate(${x + cellSize}, ${y + cellSize})`);
-        
     };
     onMount(() => {
         generateGraph();
@@ -159,16 +227,14 @@
         let sum = 0;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                sum += matrix[y+i][x+j] * kernel[i][j];
+                sum += matrix[y + i][x + j] * kernel[i][j];
             }
         }
-        console.log(new_matrix[y+1][x+1]);
-        new_matrix[y+1][x+1] = sum;
-        console.log(new_matrix[y+1][x+1]);
+        new_matrix[y + 1][x + 1] = sum;
     };
 
     function nextStep() {
-        if (step < 144) {
+        if (step < 168) {
             step++;
         }
         convolve();
@@ -178,7 +244,21 @@
         step = 0;
         new_matrix = JSON.parse(JSON.stringify(matrix));
         generateGraph();
+        clearInterval(animate);
     }
+
+    
+    const startAnimation = () => {
+        animate = setInterval(() => {
+            if (step < 255) {
+                step++;
+                convolve();
+                generateGraph();
+            } else {
+                clearInterval(animate);
+            }
+        }, 100);
+    };
 </script>
 
 <main>
@@ -221,15 +301,26 @@
     </div>
     <div class="buttons">
         <button on:click={reset}>Reset</button>
-        <button on:click={nextStep}>Next Step</button>
+        <button on:click={startAnimation}>Run</button>
     </div>
+    <section id='intro'>
+        <p>
+            In the above visualization, the left image is the original image, and the right image is the image after applying a blur filter. The blur filter is represented by the kernel matrix:
+            {@html katexify(
+                "\\begin{bmatrix} 0.05 & 0.1 & 0.05 \\\\ 0.1 & 0.4 & 0.1 \\\\ 0.05 & 0.1 & 0.05 \\end{bmatrix}",
+                true,
+            )}
+            The kernel matrix is convolved with the original image to produce the blurred image. The convolution is done by sliding the kernel matrix over the original image and multiplying the corresponding elements of the kernel matrix and the image matrix and summing them up.
+            The image above is only 16x16 and the kernel matrix is 3x3 for simplicity. In practice, images are much larger, and the kernel matrix can be of different sizes depending on the desired effect. That's where Fourier Transform kicks in to make the convolution process more computationally efficient.
+        </p>
+         </section>
 </main>
 
 <style>
     #intro {
         background-color: #f9f9f9;
         padding: 20px;
-        margin: 20px;
+        margin: 40px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
@@ -273,7 +364,7 @@
         color: black;
         border: 2px solid #4caf50;
     }
-    .buttons{
+    .buttons {
         display: flex;
         flex-direction: row;
         justify-content: center;

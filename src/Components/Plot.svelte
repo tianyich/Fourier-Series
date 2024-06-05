@@ -262,7 +262,7 @@
     }
 
     .section-container {
-        margin-top: 1em;
+        margin: 40px;
         text-align: center;
         transition: background 100ms;
         display: flex;
