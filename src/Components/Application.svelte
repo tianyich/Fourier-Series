@@ -90,7 +90,7 @@
     let animate;
 
     const generateGraph = () => {
-        const cellSize = 40; // Size of each cell in pixels
+        const cellSize = window.innerWidth * 0.02;
         d3.select(svg).selectAll("*").remove();
         d3.select(svg1).selectAll("*").remove();
 
@@ -116,7 +116,7 @@
                 const x = i % size;
                 const y = Math.floor(i / size);
                 if (x === 0 || y === 0 || x === size - 1 || y === size - 1) {
-                    return "none"; // Make the cell invisible if it's on the edge
+                    return "none"; 
                 } else {
                     return d3.interpolateGreys(1 - d / 255);
                 }
@@ -129,6 +129,7 @@
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
             .text((d) => Math.round(d))
+            .attr("font-size", cellSize *0.4)
             .attr("fill", (d, i) => {
                 const x = i % size;
                 const y = Math.floor(i / size);
@@ -196,6 +197,7 @@
             .attr("y", cellSize / 2)
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
+            .attr("font-size", cellSize *0.4)
             .text((d) => Math.round(d))
             .attr("fill", (d, i) => {
                 const x = i % size;
@@ -259,6 +261,7 @@
             }
         }, 100);
     };
+    window.addEventListener("resize", generateGraph);
 </script>
 
 <main>
@@ -295,9 +298,9 @@
         </p>
     </section>
     <div class="graph-container">
-        <svg bind:this={svg} width="600" height="600"></svg>
+        <svg bind:this={svg}></svg>
 
-        <svg bind:this={svg1} width="600" height="600"></svg>
+        <svg bind:this={svg1}></svg>
     </div>
     <div class="buttons">
         <button on:click={reset}>Reset</button>
@@ -377,5 +380,10 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
+    }
+    @media screen and (max-width: 600px) {
+        .graph-container {
+            flex-direction: column;
+        }
     }
 </style>

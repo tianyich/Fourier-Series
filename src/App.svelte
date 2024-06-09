@@ -19,10 +19,10 @@
 </main>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
     main {
         margin: 0px;
-        font-family: 'Roboto', sans-serif;
+        font-family: "Roboto", sans-serif;
         padding: 0.5em;
         top: 0px;
         left: 20em;
@@ -30,13 +30,11 @@
         width: 100%;
         height: 100vh;
         box-sizing: border-box;
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        margin-bottom: 4em;
     }
     main::-webkit-scrollbar {
         display: none;
-    }
-    main > * {
-        margin-bottom: 4em; 
     }
 </style>

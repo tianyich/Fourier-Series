@@ -17,6 +17,10 @@
         {@html katexify(def,true)}
         Where {@html katexify('\\hat{f}(n)')} is the {@html katexify('n^{th}')} Fourier coefficient of the function {@html katexify('f(x)')}.
     </p>
+    <p>
+        Below is an interactive plot that shows the Fourier series approximation of a function. You can select different functions and adjust the number of terms in the series using the slider bar.
+        And we will go through the steps of deriving the Fourier series of a function.
+    </p>
    
 </section>
 <style>

@@ -1,7 +1,7 @@
 <script>
     import katexify from "../katexify";
-    const fft = "\\hat{x}[k] = \\sum_{n=0}^{N-1} x[n] e^{-2\\pi ikn/N} = \\sum_{n=0}^{N/2-1} x[2n] e^{-2\\pi ik(2n)/N} + \\sum_{n=0}^{N/2-1} x[2n+1] e^{-2\\pi ik(2n+1)/N}";
-        
+    const fft =
+        "\\hat{x}[k] = \\sum_{n=0}^{N-1} x[n] e^{-2\\pi ikn/N} = \\sum_{n=0}^{N/2-1} x[2n] e^{-2\\pi ik(2n)/N} + \\sum_{n=0}^{N/2-1} x[2n+1] e^{-2\\pi ik(2n+1)/N}";
 </script>
 
 <main>
@@ -30,7 +30,8 @@
             )}
             which are very similar to the continuous Fourier transform.
         </p>
-
+    </section>
+    <section id="intro">
         <h2>Fast Fourier Transform (FFT)</h2>
         <p>
             Imagine we wants to compute the DFT of a function with N samples
@@ -39,16 +40,28 @@
                 "O(N^2)",
             )} operations. This can be computationally expensive for large number
             of samples. The Fast Fourier Transform (FFT) is an algorithm that reduces
-            the number of operations to {@html katexify("O(N\\log N)")}.
-            The Idea is divide and conquer. By the above formula, we have:
+            the number of operations to {@html katexify("O(N\\log N)")}. The
+            Idea is divide and conquer. By the above formula, we have:
             {@html katexify(fft, true)}
-            In this way, if {@html katexify("N")} is even, we can
-            divide the sum into two parts, the part with even indices and odd indices, each with {@html katexify("N/2")} samples.
-            Then we can divide each smaller sum again and again until we have only one sample.
-            This gives the reccurence relation for the FFT algorithm.
+            In this way, if {@html katexify("N")} is even, we can divide the sum
+            into two parts, the part with even indices and odd indices, each with
+            {@html katexify("N/2")} samples. Then we can divide each smaller sum
+            again and again until we have only one sample. This gives the reccurence
+            relation for the FFT algorithm.
             {@html katexify("T(N) = 2T(N/2) + O(N)", true)}
             which gives the time complexity of {@html katexify("O(N\\log N)")} operations.
-            In practice, we usually perform zero-padding to the samples to the nearest power of 2 to fully use the ecfficiency of FFT.
+            In practice, we usually perform zero-padding to the samples to the nearest
+            power of 2 to fully use the efficiency of FFT.
+        </p>
+    </section>
+
+    <section id="intro">
+        <h2>Summary</h2>
+        <p>
+            We've covered things from Fourier Series to Fourier Transforms, and looked at how these tools are used in our life. 
+            We also talked about the Discrete Fourier Transform (DFT) and Fast Fourier Transform (FFT), which are super handy for processing signals and images
+            quickly and efficiently. Plus, we explored how convolution works in filtering images. 
+            Hopefully you will found this website enlightening and feel ready to use these concepts in your projects or just to satisfy your curiosity. 
         </p>
     </section>
 </main>
@@ -63,7 +76,6 @@
     }
 
     #intro h2 {
-        
         color: #333;
         font-size: 1.5em;
         margin-bottom: 10px;

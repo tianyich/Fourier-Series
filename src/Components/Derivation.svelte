@@ -18,9 +18,11 @@
         const svg1 = d3.select(svg);
         svg1.selectAll("path").remove();
         svg1.selectAll("g").remove();
-        const width = 700,
-            height = 700,
+
+        const width = window.innerWidth*0.5,
+            height = window.innerHeight*0.6,
             padding = 5;
+        svg1.attr("width", width).attr("height", height);
 
         const xScale = d3
             .scaleLinear()
@@ -80,6 +82,30 @@
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
             .attr("d", line);
+        
+        const legend = svg1.append("g")
+            .attr("transform", `translate(${0.75*width}, ${height - 50})`);
+        const legendData = [
+            { color: "red", text: "Original function" },
+            { color: "blue", text: "Approximated function" }
+        ];
+
+        const legendItems = legend.selectAll("g")
+            .data(legendData)
+            .enter()
+            .append("g");
+
+        legendItems.append("rect")
+            .attr("width", 10)
+            .attr("height", 10)
+            .attr("fill", d => d.color);
+
+        legendItems.append("text")
+            .attr("x", 15)
+            .attr("y", 10)
+            .text(d => d.text);
+
+        legendItems.attr("transform", (d, i) => `translate(0, ${i * 20})`);
     };
 
     const selectFunction = (key) => {
@@ -87,6 +113,7 @@
         generatePlot();
     };
     onMount(generatePlot);
+    window.addEventListener("resize", generatePlot);
 </script>
 
 <main>
@@ -132,7 +159,7 @@
                     </ul>
                 </div>
 
-                <svg bind:this={svg} width="700" height="700"></svg>
+                <svg bind:this={svg}></svg>
             </div>
 
         </div>
@@ -150,6 +177,9 @@
             {@html katexify(
                 "f(x) = \\int_{-\\infty}^{\\infty} \\hat{f}(\\xi) e^{2\\pi i x\\xi} d\\xi", true
             )}
+            Of course, since we are working with infinities here, not all functions have Fourier transforms.
+            For example, the example we gave above, {@html katexify("f(x) = x^2")} does not have a Fourier transform.
+            since its integral from {@html katexify("-\\infty")} to {@html katexify("\\infty")} does not converge.
             </section>
     </div>
 </main>
